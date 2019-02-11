@@ -22,7 +22,11 @@ app.use(function (req, res, next) {
 
 
 app.use(express.static(__dirname + '/dist'));
-var server = app.listen(3000);
+const port = process.env.PORT;
+if(port == null || port == ''){
+    port = 8000;
+};
+var server = app.listen(port);
 var io = require('socket.io').listen(server);
 
 var allTasks = [{
