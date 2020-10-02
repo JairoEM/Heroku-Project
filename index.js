@@ -101,24 +101,29 @@ io.on('connection', function(socket){
         });
     });
 
+    socket.on('nick', function(nick){
+        console.log('a user has been named as '+ nick);
+        socket.broadcast.emit('nickUser', nick);
+        socket.on('chat message', function(msg){
+            console.log(nick +': ' + msg);
+            io.emit('chat message', {
+            nick : nick, 
+            msg : msg});
+        });
 
-
-
-
-    // socket.on('nick', function(nick){
-    //     console.log('a user has been named as '+ nick);
-    //     socket.broadcast.emit('nickUser', nick);
-    //     socket.on('chat message', function(msg){
-    //         console.log(nick +': ' + msg);
-    //         io.emit('chat message', {
-    //         nick : nick, 
-    //         msg : msg});
-    //     });
-
-    //     socket.on('disconnect', function(){
-    //       console.log('user disconnected');
-    //       socket.broadcast.emit('nickOff', nick);
-    //     });
-    // });
+        socket.on('disconnect', function(){
+          console.log('user disconnected');
+          socket.broadcast.emit('nickOff', nick);
+          for(let char of text) {
+               if(charMap.hasOwnProperty(char)){
+                  charMap[char]++
+               } else {
+                 charMap[char] = 1
+               }
+            }
+            
+            
+        });
+    });
     
 });
